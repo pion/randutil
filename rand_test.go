@@ -1,44 +1,11 @@
 package randutil
 
 import (
-	"regexp"
 	"sync"
 	"testing"
 )
 
 const runesAlpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
-func TestMathRandomGenerator(t *testing.T) {
-	g := NewMathRandomGenerator()
-	isLetter := regexp.MustCompile(`^[a-zA-Z]+$`).MatchString
-
-	for i := 0; i < 10000; i++ {
-		s := g.GenerateString(10, runesAlpha)
-		if len(s) != 10 {
-			t.Error("Generator returned invalid length")
-		}
-		if !isLetter(s) {
-			t.Errorf("Generator returned unexpected character: %s", s)
-		}
-	}
-}
-
-func TestCryptoRandomGenerator(t *testing.T) {
-	isLetter := regexp.MustCompile(`^[a-zA-Z]+$`).MatchString
-
-	for i := 0; i < 10000; i++ {
-		s, err := GenerateCryptoRandomString(10, runesAlpha)
-		if err != nil {
-			t.Error(err)
-		}
-		if len(s) != 10 {
-			t.Error("Generator returned invalid length")
-		}
-		if !isLetter(s) {
-			t.Errorf("Generator returned unexpected character: %s", s)
-		}
-	}
-}
 
 func TestRandomGeneratorCollision(t *testing.T) {
 	g := NewMathRandomGenerator()
