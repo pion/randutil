@@ -1,0 +1,2 @@
+# randutil
+Helper library for cryptographic and mathmatical randoms
