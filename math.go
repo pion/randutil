@@ -1,9 +1,6 @@
 package randutil
 
 import (
-	crand "crypto/rand"
-	"encoding/binary"
-	"math/big"
 	mrand "math/rand" // used for non-crypto unique ID and random port selection
 	"sync"
 	"time"
@@ -35,13 +32,13 @@ type mathRandomGenerator struct {
 // NewMathRandomGenerator creates new mathmatical random generator.
 // Random generator is seeded by crypto random.
 func NewMathRandomGenerator() MathRandomGenerator {
-	var seed int64
-	if err := binary.Read(crand.Reader, binary.LittleEndian, &seed); err != nil {
+	seed, err := CryptoUint64()
+	if err != nil {
 		// crypto/rand is unavailable. Fallback to seed by time.
-		seed = time.Now().UnixNano()
+		seed = uint64(time.Now().UnixNano())
 	}
 
-	return &mathRandomGenerator{r: mrand.New(mrand.NewSource(seed))}
+	return &mathRandomGenerator{r: mrand.New(mrand.NewSource(int64(seed)))}
 }
 
 func (g *mathRandomGenerator) Intn(n int) int {
@@ -72,18 +69,4 @@ func (g *mathRandomGenerator) GenerateString(n int, runes string) string {
 		b[i] = letters[g.Intn(len(letters))]
 	}
 	return string(b)
-}
-
-// GenerateCryptoRandomString generates a random string for cryptographic usage.
-func GenerateCryptoRandomString(n int, runes string) (string, error) {
-	letters := []rune(runes)
-	b := make([]rune, n)
-	for i := range b {
-		v, err := crand.Int(crand.Reader, big.NewInt(int64(len(letters))))
-		if err != nil {
-			return "", err
-		}
-		b[i] = letters[v.Int64()]
-	}
-	return string(b), nil
 }
