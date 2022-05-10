@@ -18,12 +18,8 @@ then
   . ${SCRIPT_PATH}/.ci.conf
 fi
 
-EXCLUDE_DIRECTORIES=${DISALLOWED_FUNCTIONS_EXCLUDED_DIRECTORIES:-"examples"}
-DISALLOWED_FUNCTIONS=('os.Exit(' 'panic(' 'Fatal(' 'Fatalf(' 'Fatalln(' 'fmt.Println(' 'fmt.Printf(' 'log.Print(' 'log.Println(' 'log.Printf(' 'print(' 'println(')
-
 files=$(
   find "$SCRIPT_PATH/.." -name "*.go" \
-    | grep -v -e '^.*_test.go$' \
     | while read file
     do
       excluded=false
@@ -39,10 +35,7 @@ files=$(
     done
 )
 
-for disallowedFunction in "${DISALLOWED_FUNCTIONS[@]}"
-do
-	if grep -e "\s$disallowedFunction" $files | grep -v -e 'nolint'; then
-		echo "$disallowedFunction may only be used in example code"
-		exit 1
-	fi
-done
+if grep -E '\.(Trace|Debug|Info|Warn|Error)f?\("[^"]*\\n"\)?' $files | grep -v -e 'nolint'; then
+	echo "Log format strings should have trailing new-line"
+	exit 1
+fi
