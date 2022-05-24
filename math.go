@@ -1,3 +1,4 @@
+// Package randutil provides primitives for generating random values
 package randutil
 
 import (
@@ -38,7 +39,7 @@ func NewMathRandomGenerator() MathRandomGenerator {
 		seed = uint64(time.Now().UnixNano())
 	}
 
-	return &mathRandomGenerator{r: mrand.New(mrand.NewSource(int64(seed)))}
+	return &mathRandomGenerator{r: mrand.New(mrand.NewSource(int64(seed)))} //nolint: stylechec, gosec
 }
 
 func (g *mathRandomGenerator) Intn(n int) int {
