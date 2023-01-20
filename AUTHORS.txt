@@ -2,6 +2,6 @@
 # we would love to have you https://github.com/pion/webrtc/wiki/Contributing
 #
 # This file is auto generated, using git to list all individuals contributors.
-# see `.github/generate-authors.sh` for the scripting
+# see  for the scripting
 Atsushi Watanabe <atsushi.w@ieee.org>
 Daniele Sluijters <daenney@users.noreply.github.com>
