@@ -5,3 +5,6 @@
 # see https://github.com/pion/.goassets/blob/master/scripts/generate-authors.sh for the scripting
 Atsushi Watanabe <atsushi.w@ieee.org>
 Daniele Sluijters <daenney@users.noreply.github.com>
+
+# List of contributors not appearing in Git history
+
