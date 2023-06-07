@@ -6,6 +6,7 @@ package randutil
 
 import (
 	mrand "math/rand" // used for non-crypto unique ID and random port selection
+	"strings"
 	"sync"
 	"time"
 )
@@ -67,10 +68,11 @@ func (g *mathRandomGenerator) Uint64() uint64 {
 }
 
 func (g *mathRandomGenerator) GenerateString(n int, runes string) string {
-	letters := []rune(runes)
-	b := make([]rune, n)
-	for i := range b {
-		b[i] = letters[g.Intn(len(letters))]
+	letters := []byte(runes)
+	var b strings.Builder
+	b.Grow(n)
+	for i := 0; i < n; i++ {
+		b.WriteByte(letters[g.Intn(len(letters))])
 	}
-	return string(b)
+	return b.String()
 }
