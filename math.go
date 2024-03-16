@@ -42,7 +42,7 @@ func NewMathRandomGenerator() MathRandomGenerator {
 		seed = uint64(time.Now().UnixNano())
 	}
 
-	return &mathRandomGenerator{r: mrand.New(mrand.NewSource(int64(seed)))} //nolint: stylechec, gosec
+	return &mathRandomGenerator{r: mrand.New(mrand.NewSource(int64(seed)))} //nolint: stylecheck, gosec
 }
 
 func (g *mathRandomGenerator) Intn(n int) int {

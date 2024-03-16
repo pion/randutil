@@ -17,7 +17,7 @@ func TestRandomGeneratorCollision(t *testing.T) {
 		gen func(t *testing.T) string
 	}{
 		"MathRandom": {
-			gen: func(t *testing.T) string {
+			gen: func(*testing.T) string {
 				return g.GenerateString(10, runesAlpha)
 			},
 		},
