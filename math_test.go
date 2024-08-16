@@ -26,24 +26,24 @@ func TestMathRandomGenerator(t *testing.T) {
 func TestIntn(t *testing.T) {
 	g := NewMathRandomGenerator()
 
-	min := 100
-	max := 0
+	localMin := 100
+	localMax := 0
 	for i := 0; i < 10000; i++ {
 		r := g.Intn(100)
 		if r < 0 || r >= 100 {
 			t.Fatalf("Out of range of Intn(100): %d", r)
 		}
-		if r < min {
-			min = r
+		if r < localMin {
+			localMin = r
 		}
-		if r > max {
-			max = r
+		if r > localMax {
+			localMax = r
 		}
 	}
-	if min > 10 {
+	if localMin > 10 {
 		t.Error("Value around lower boundary was not generated")
 	}
-	if max < 90 {
+	if localMax < 90 {
 		t.Error("Value around upper boundary was not generated")
 	}
 }
@@ -51,21 +51,21 @@ func TestIntn(t *testing.T) {
 func TestUint64(t *testing.T) {
 	g := NewMathRandomGenerator()
 
-	min := uint64(0xFFFFFFFFFFFFFFFF)
-	max := uint64(0)
+	localMin := uint64(0xFFFFFFFFFFFFFFFF)
+	localMax := uint64(0)
 	for i := 0; i < 10000; i++ {
 		r := g.Uint64()
-		if r < min {
-			min = r
+		if r < localMin {
+			localMin = r
 		}
-		if r > max {
-			max = r
+		if r > localMax {
+			localMax = r
 		}
 	}
-	if min > 0x1000000000000000 {
+	if localMin > 0x1000000000000000 {
 		t.Error("Value around lower boundary was not generated")
 	}
-	if max < 0xF000000000000000 {
+	if localMax < 0xF000000000000000 {
 		t.Error("Value around upper boundary was not generated")
 	}
 }
@@ -73,21 +73,21 @@ func TestUint64(t *testing.T) {
 func TestUint32(t *testing.T) {
 	g := NewMathRandomGenerator()
 
-	min := uint32(0xFFFFFFFF)
-	max := uint32(0)
+	localMin := uint32(0xFFFFFFFF)
+	localMax := uint32(0)
 	for i := 0; i < 10000; i++ {
 		r := g.Uint32()
-		if r < min {
-			min = r
+		if r < localMin {
+			localMin = r
 		}
-		if r > max {
-			max = r
+		if r > localMax {
+			localMax = r
 		}
 	}
-	if min > 0x10000000 {
+	if localMin > 0x10000000 {
 		t.Error("Value around lower boundary was not generated")
 	}
-	if max < 0xF0000000 {
+	if localMax < 0xF0000000 {
 		t.Error("Value around upper boundary was not generated")
 	}
 }

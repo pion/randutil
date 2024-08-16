@@ -26,24 +26,24 @@ func TestCryptoRandomGenerator(t *testing.T) {
 }
 
 func TestCryptoUint64(t *testing.T) {
-	min := uint64(0xFFFFFFFFFFFFFFFF)
-	max := uint64(0)
+	localMin := uint64(0xFFFFFFFFFFFFFFFF)
+	localMax := uint64(0)
 	for i := 0; i < 10000; i++ {
 		r, err := CryptoUint64()
 		if err != nil {
 			t.Fatal(err)
 		}
-		if r < min {
-			min = r
+		if r < localMin {
+			localMin = r
 		}
-		if r > max {
-			max = r
+		if r > localMax {
+			localMax = r
 		}
 	}
-	if min > 0x1000000000000000 {
+	if localMin > 0x1000000000000000 {
 		t.Error("Value around lower boundary was not generated")
 	}
-	if max < 0xF000000000000000 {
+	if localMax < 0xF000000000000000 {
 		t.Error("Value around upper boundary was not generated")
 	}
 }
