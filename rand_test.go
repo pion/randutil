@@ -23,16 +23,19 @@ func TestRandomGeneratorCollision(t *testing.T) {
 		},
 		"CryptoRandom": {
 			gen: func(t *testing.T) string {
+				t.Helper()
+
 				s, err := GenerateCryptoRandomString(10, runesAlpha)
 				if err != nil {
 					t.Fatal(err)
 				}
+
 				return s
 			},
 		},
 	}
 
-	const N = 100
+	const maxIterations = 100
 	const iteration = 100
 
 	for name, testCase := range testCases {
@@ -42,9 +45,9 @@ func TestRandomGeneratorCollision(t *testing.T) {
 				var wg sync.WaitGroup
 				var mu sync.Mutex
 
-				rands := make([]string, 0, N)
+				rands := make([]string, 0, maxIterations)
 
-				for i := 0; i < N; i++ {
+				for i := 0; i < maxIterations; i++ {
 					wg.Add(1)
 					go func() {
 						r := testCase.gen(t)
@@ -56,12 +59,12 @@ func TestRandomGeneratorCollision(t *testing.T) {
 				}
 				wg.Wait()
 
-				if len(rands) != N {
+				if len(rands) != maxIterations {
 					t.Fatal("Failed to generate randoms")
 				}
 
-				for i := 0; i < N; i++ {
-					for j := i + 1; j < N; j++ {
+				for i := 0; i < maxIterations; i++ {
+					for j := i + 1; j < maxIterations; j++ {
 						if rands[i] == rands[j] {
 							t.Fatalf("generateRandString caused collision: %s == %s", rands[i], rands[j])
 						}

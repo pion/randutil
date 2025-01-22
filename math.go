@@ -39,16 +39,17 @@ func NewMathRandomGenerator() MathRandomGenerator {
 	seed, err := CryptoUint64()
 	if err != nil {
 		// crypto/rand is unavailable. Fallback to seed by time.
-		seed = uint64(time.Now().UnixNano())
+		seed = uint64(time.Now().UnixNano()) //nolint:gosec // G115
 	}
 
-	return &mathRandomGenerator{r: mrand.New(mrand.NewSource(int64(seed)))} //nolint: stylecheck, gosec
+	return &mathRandomGenerator{r: mrand.New(mrand.NewSource(int64(seed)))} //nolint:stylecheck,gosec
 }
 
 func (g *mathRandomGenerator) Intn(n int) int {
 	g.mu.Lock()
 	v := g.r.Intn(n)
 	g.mu.Unlock()
+
 	return v
 }
 
@@ -56,6 +57,7 @@ func (g *mathRandomGenerator) Uint32() uint32 {
 	g.mu.Lock()
 	v := g.r.Uint32()
 	g.mu.Unlock()
+
 	return v
 }
 
@@ -63,6 +65,7 @@ func (g *mathRandomGenerator) Uint64() uint64 {
 	g.mu.Lock()
 	v := g.r.Uint64()
 	g.mu.Unlock()
+
 	return v
 }
 
@@ -72,5 +75,6 @@ func (g *mathRandomGenerator) GenerateString(n int, runes string) string {
 	for i := range b {
 		b[i] = letters[g.Intn(len(letters))]
 	}
+
 	return string(b)
 }

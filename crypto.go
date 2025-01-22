@@ -20,6 +20,7 @@ func GenerateCryptoRandomString(n int, runes string) (string, error) {
 		}
 		b[i] = letters[v.Int64()]
 	}
+
 	return string(b), nil
 }
 
@@ -29,5 +30,6 @@ func CryptoUint64() (uint64, error) {
 	if err := binary.Read(crand.Reader, binary.LittleEndian, &v); err != nil {
 		return 0, err
 	}
+
 	return v, nil
 }
