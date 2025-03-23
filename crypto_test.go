@@ -6,6 +6,8 @@ package randutil
 import (
 	"regexp"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCryptoRandomGenerator(t *testing.T) {
@@ -13,15 +15,9 @@ func TestCryptoRandomGenerator(t *testing.T) {
 
 	for i := 0; i < 10000; i++ {
 		s, err := GenerateCryptoRandomString(10, runesAlpha)
-		if err != nil {
-			t.Error(err)
-		}
-		if len(s) != 10 {
-			t.Error("Generator returned invalid length")
-		}
-		if !isLetter(s) {
-			t.Errorf("Generator returned unexpected character: %s", s)
-		}
+		assert.NoError(t, err)
+		assert.Equal(t, 10, len(s), "Generated string was not the correct length")
+		assert.True(t, isLetter(s), "Generator returned unexpected character: %s", s)
 	}
 }
 
@@ -30,9 +26,8 @@ func TestCryptoUint64(t *testing.T) {
 	localMax := uint64(0)
 	for i := 0; i < 10000; i++ {
 		r, err := CryptoUint64()
-		if err != nil {
-			t.Fatal(err)
-		}
+		assert.NoError(t, err)
+
 		if r < localMin {
 			localMin = r
 		}
@@ -40,10 +35,7 @@ func TestCryptoUint64(t *testing.T) {
 			localMax = r
 		}
 	}
-	if localMin > 0x1000000000000000 {
-		t.Error("Value around lower boundary was not generated")
-	}
-	if localMax < 0xF000000000000000 {
-		t.Error("Value around upper boundary was not generated")
-	}
+
+	assert.Greater(t, uint64(0x1000000000000000), localMin, "Value around lower boundary was not generated")
+	assert.Less(t, uint64(0xF000000000000000), localMax, "Value around upper boundary was not generated")
 }

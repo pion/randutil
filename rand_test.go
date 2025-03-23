@@ -6,6 +6,8 @@ package randutil
 import (
 	"sync"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 const runesAlpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -26,9 +28,7 @@ func TestRandomGeneratorCollision(t *testing.T) {
 				t.Helper()
 
 				s, err := GenerateCryptoRandomString(10, runesAlpha)
-				if err != nil {
-					t.Fatal(err)
-				}
+				assert.NoError(t, err)
 
 				return s
 			},
@@ -59,15 +59,11 @@ func TestRandomGeneratorCollision(t *testing.T) {
 				}
 				wg.Wait()
 
-				if len(rands) != maxIterations {
-					t.Fatal("Failed to generate randoms")
-				}
+				assert.Equal(t, maxIterations, len(rands), "Failed to generate all randoms")
 
 				for i := 0; i < maxIterations; i++ {
 					for j := i + 1; j < maxIterations; j++ {
-						if rands[i] == rands[j] {
-							t.Fatalf("generateRandString caused collision: %s == %s", rands[i], rands[j])
-						}
+						assert.NotEqual(t, rands[i], rands[j], "generateRandString caused collision")
 					}
 				}
 			}

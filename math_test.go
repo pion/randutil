@@ -6,6 +6,8 @@ package randutil
 import (
 	"regexp"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestMathRandomGenerator(t *testing.T) {
@@ -14,12 +16,8 @@ func TestMathRandomGenerator(t *testing.T) {
 
 	for i := 0; i < 10000; i++ {
 		s := g.GenerateString(10, runesAlpha)
-		if len(s) != 10 {
-			t.Error("Generator returned invalid length")
-		}
-		if !isLetter(s) {
-			t.Errorf("Generator returned unexpected character: %s", s)
-		}
+		assert.Equal(t, 10, len(s), "Generated string was not the correct length")
+		assert.True(t, isLetter(s), "Generator returned unexpected character: %s", s)
 	}
 }
 
@@ -30,9 +28,9 @@ func TestIntn(t *testing.T) {
 	localMax := 0
 	for i := 0; i < 10000; i++ {
 		r := g.Intn(100)
-		if r < 0 || r >= 100 {
-			t.Fatalf("Out of range of Intn(100): %d", r)
-		}
+		assert.GreaterOrEqual(t, r, 0, "Generated value was not greater than 0")
+		assert.Less(t, r, 100, "Generated value was not less than 100")
+
 		if r < localMin {
 			localMin = r
 		}
@@ -40,12 +38,8 @@ func TestIntn(t *testing.T) {
 			localMax = r
 		}
 	}
-	if localMin > 10 {
-		t.Error("Value around lower boundary was not generated")
-	}
-	if localMax < 90 {
-		t.Error("Value around upper boundary was not generated")
-	}
+	assert.Greater(t, 10, localMin, "Value around lower boundary was not generated")
+	assert.Less(t, 90, localMax, "Value around upper boundary was not generated")
 }
 
 func TestUint64(t *testing.T) {
@@ -62,12 +56,8 @@ func TestUint64(t *testing.T) {
 			localMax = r
 		}
 	}
-	if localMin > 0x1000000000000000 {
-		t.Error("Value around lower boundary was not generated")
-	}
-	if localMax < 0xF000000000000000 {
-		t.Error("Value around upper boundary was not generated")
-	}
+	assert.Greater(t, uint64(0x1000000000000000), localMin, "Value around lower boundary was not generated")
+	assert.Less(t, uint64(0xF000000000000000), localMax, "Value around upper boundary was not generated")
 }
 
 func TestUint32(t *testing.T) {
@@ -84,10 +74,6 @@ func TestUint32(t *testing.T) {
 			localMax = r
 		}
 	}
-	if localMin > 0x10000000 {
-		t.Error("Value around lower boundary was not generated")
-	}
-	if localMax < 0xF0000000 {
-		t.Error("Value around upper boundary was not generated")
-	}
+	assert.Greater(t, uint32(0x10000000), localMin, "Value around lower boundary was not generated")
+	assert.Less(t, uint32(0xF0000000), localMax, "Value around upper boundary was not generated")
 }
