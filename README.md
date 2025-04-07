@@ -2,7 +2,7 @@
 Helper library for cryptographic and mathmatical randoms
 
 ### Community
-Pion has an active community on the [Golang Slack](https://invite.slack.golangbridge.org/). Sign up and join the **#pion** channel for discussions and support. You can also use [Pion mailing list](https://groups.google.com/forum/#!forum/pion).
+Pion has an active community on the [Discord](https://discord.gg/PngbdqpFbt). Sign up and join the **#pion** channel for discussions and support. You can also use [Pion mailing list](https://groups.google.com/forum/#!forum/pion).
 
 We are always looking to support **your projects**. Please reach out if you have something to build!
 
