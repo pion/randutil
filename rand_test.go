@@ -39,15 +39,14 @@ func TestRandomGeneratorCollision(t *testing.T) {
 	const iteration = 100
 
 	for name, testCase := range testCases {
-		testCase := testCase
 		t.Run(name, func(t *testing.T) {
-			for iter := 0; iter < iteration; iter++ {
+			for range iteration {
 				var wg sync.WaitGroup
 				var mu sync.Mutex
 
 				rands := make([]string, 0, maxIterations)
 
-				for i := 0; i < maxIterations; i++ {
+				for range maxIterations {
 					wg.Add(1)
 					go func() {
 						r := testCase.gen(t)
@@ -61,7 +60,7 @@ func TestRandomGeneratorCollision(t *testing.T) {
 
 				assert.Equal(t, maxIterations, len(rands), "Failed to generate all randoms")
 
-				for i := 0; i < maxIterations; i++ {
+				for i := range maxIterations {
 					for j := i + 1; j < maxIterations; j++ {
 						assert.NotEqual(t, rands[i], rands[j], "generateRandString caused collision")
 					}

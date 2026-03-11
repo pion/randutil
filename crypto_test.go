@@ -13,7 +13,7 @@ import (
 func TestCryptoRandomGenerator(t *testing.T) {
 	isLetter := regexp.MustCompile(`^[a-zA-Z]+$`).MatchString
 
-	for i := 0; i < 10000; i++ {
+	for range 10000 {
 		s, err := GenerateCryptoRandomString(10, runesAlpha)
 		assert.NoError(t, err)
 		assert.Equal(t, 10, len(s), "Generated string was not the correct length")
@@ -24,7 +24,7 @@ func TestCryptoRandomGenerator(t *testing.T) {
 func TestCryptoUint64(t *testing.T) {
 	localMin := uint64(0xFFFFFFFFFFFFFFFF)
 	localMax := uint64(0)
-	for i := 0; i < 10000; i++ {
+	for range 10000 {
 		r, err := CryptoUint64()
 		assert.NoError(t, err)
 

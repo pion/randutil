@@ -14,7 +14,7 @@ func TestMathRandomGenerator(t *testing.T) {
 	g := NewMathRandomGenerator()
 	isLetter := regexp.MustCompile(`^[a-zA-Z]+$`).MatchString
 
-	for i := 0; i < 10000; i++ {
+	for range 10000 {
 		s := g.GenerateString(10, runesAlpha)
 		assert.Equal(t, 10, len(s), "Generated string was not the correct length")
 		assert.True(t, isLetter(s), "Generator returned unexpected character: %s", s)
@@ -26,7 +26,7 @@ func TestIntn(t *testing.T) {
 
 	localMin := 100
 	localMax := 0
-	for i := 0; i < 10000; i++ {
+	for range 10000 {
 		r := g.Intn(100)
 		assert.GreaterOrEqual(t, r, 0, "Generated value was not greater than 0")
 		assert.Less(t, r, 100, "Generated value was not less than 100")
@@ -47,7 +47,7 @@ func TestUint64(t *testing.T) {
 
 	localMin := uint64(0xFFFFFFFFFFFFFFFF)
 	localMax := uint64(0)
-	for i := 0; i < 10000; i++ {
+	for range 10000 {
 		r := g.Uint64()
 		if r < localMin {
 			localMin = r
@@ -65,7 +65,7 @@ func TestUint32(t *testing.T) {
 
 	localMin := uint32(0xFFFFFFFF)
 	localMax := uint32(0)
-	for i := 0; i < 10000; i++ {
+	for range 10000 {
 		r := g.Uint32()
 		if r < localMin {
 			localMin = r
