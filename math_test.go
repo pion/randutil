@@ -4,6 +4,7 @@
 package randutil
 
 import (
+	"encoding/binary"
 	"regexp"
 	"testing"
 
@@ -18,6 +19,51 @@ func TestMathRandomGenerator(t *testing.T) {
 		s := g.GenerateString(10, runesAlpha)
 		assert.Equal(t, 10, len(s), "Generated string was not the correct length")
 		assert.True(t, isLetter(s), "Generator returned unexpected character: %s", s)
+	}
+}
+
+// TestMathRandomGeneratorUsesFullSeed ensures that the full 32-byte seed is used and that
+// changing only the first 8 bytes of the seed results in different outputs.
+func TestMathRandomGeneratorUsesFullSeed(t *testing.T) {
+	const seed = uint64(12345)
+	const legacySeedModulus = uint64(1<<31 - 1)
+
+	var seedA [32]byte
+	var seedB [32]byte
+	binary.LittleEndian.PutUint64(seedA[:8], seed)
+	binary.LittleEndian.PutUint64(seedB[:8], seed+legacySeedModulus)
+
+	gA := newMathRandomGenerator(seedA)
+	gB := newMathRandomGenerator(seedB)
+
+	assert.NotEqual(t, gA.Uint64(), gB.Uint64())
+
+	firstOutput := newMathRandomGenerator(seedA).Uint64()
+	for i := range len(seedA) {
+		modifiedSeed := seedA
+		modifiedSeed[i] ^= 1
+		assert.NotEqual(t, firstOutput, newMathRandomGenerator(modifiedSeed).Uint64(), "changing seed byte %d did not affect output", i)
+	}
+}
+
+// TestMathRandomGeneratorDoesNotExposeLaggedFibonacciState ensures that the internal state of the
+// lagged-Fibonacci generator is not exposed through the output sequence.
+func TestMathRandomGeneratorDoesNotExposeLaggedFibonacciState(t *testing.T) {
+	seed := [32]byte{1}
+	g := newMathRandomGenerator(seed)
+
+	const stateLength = 607
+	const tapOffset = 273
+	const predictedOutputs = 50
+
+	outputs := make([]uint64, stateLength+predictedOutputs)
+	for i := range outputs {
+		outputs[i] = g.Uint64()
+	}
+
+	for i := stateLength; i < len(outputs); i++ {
+		predicted := outputs[i-tapOffset] + outputs[i-stateLength]
+		assert.NotEqual(t, predicted, outputs[i], "output %d matched the lagged-Fibonacci recurrence", i)
 	}
 }
 
