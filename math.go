@@ -5,9 +5,9 @@
 package randutil
 
 import (
-	mrand "math/rand" // used for non-crypto unique ID and random port selection
+	crand "crypto/rand"
+	mrand "math/rand/v2" // used for non-crypto unique ID and random port selection
 	"sync"
-	"time"
 )
 
 // MathRandomGenerator is a random generator for non-crypto usage.
@@ -33,21 +33,26 @@ type mathRandomGenerator struct {
 	mu sync.Mutex
 }
 
-// NewMathRandomGenerator creates new mathmatical random generator.
-// Random generator is seeded by crypto random.
+// NewMathRandomGenerator creates a new mathematical random generator.
+// It terminates the process if it cannot obtain a seed from crypto/rand.
 func NewMathRandomGenerator() MathRandomGenerator {
-	seed, err := CryptoUint64()
-	if err != nil {
-		// crypto/rand is unavailable. Fallback to seed by time.
-		seed = uint64(time.Now().UnixNano()) //nolint:gosec // G115
-	}
+	var seed [32]byte
+	// crypto/rand.Read fills the buffer or terminates if its source fails. It uses operating
+	// system APIs that are documented to never return an error on all but legacy Linux systems.
+	// Note to maintainers: if you need to fall back to timestamp-based seeding for legacy systems,
+	// put that code behind a build tag to make default builds secure.
+	_, _ = crand.Read(seed[:])
 
-	return &mathRandomGenerator{r: mrand.New(mrand.NewSource(int64(seed)))} //nolint:stylecheck,gosec
+	return newMathRandomGenerator(seed)
+}
+
+func newMathRandomGenerator(seed [32]byte) *mathRandomGenerator {
+	return &mathRandomGenerator{r: mrand.New(mrand.NewChaCha8(seed))} //nolint:gosec // ChaCha8 is seeded by crypto/rand; gosec flags math/rand/v2 broadly.
 }
 
 func (g *mathRandomGenerator) Intn(n int) int {
 	g.mu.Lock()
-	v := g.r.Intn(n)
+	v := g.r.IntN(n)
 	g.mu.Unlock()
 
 	return v
